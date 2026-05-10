@@ -1,0 +1,163 @@
+<div class="page-wrapper">
+  @if (successMessage) {
+    <div class="toast">{{ successMessage }}</div>
+  }
+
+  <div class="page-header">IT 04-1</div>
+
+  <div class="form-card">
+    <form [formGroup]="form" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" formControlName="firstName" />
+          @if (f["firstName"].touched && f["firstName"].hasError("required")) {
+            <span class="error">Please provide a First Name</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" formControlName="lastName" />
+          @if (f["lastName"].touched && f["lastName"].hasError("required")) {
+            <span class="error">Please provide a Last Name</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" formControlName="email" />
+          @if (f["email"].touched && f["email"].invalid) {
+            <span class="error">Please provide a valid Email</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" formControlName="phone" maxlength="10" />
+          @if (f["phone"].touched && f["phone"].invalid) {
+            <span class="error">Please provide a valid Phone</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Profile</label>
+          <div class="file-wrapper">
+            <input
+              type="text"
+              [value]="profileFileName"
+              readonly
+              class="file-display"
+              placeholder=""
+            />
+            <button type="button" class="browse-btn" (click)="onBrowseClick()">
+              Browse
+            </button>
+            <input
+              #fileInput
+              type="file"
+              class="hidden-file"
+              (change)="onFileChange($event)"
+              accept="image/*,application/pdf"
+            />
+          </div>
+          @if (f["profile"].touched && f["profile"].hasError("required")) {
+            <span class="error">Please selected any profile</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Birth Day</label>
+          <input type="date" formControlName="birthDay" />
+          @if (f["birthDay"].touched && f["birthDay"].hasError("required")) {
+            <span class="error">Please provide a valid Birth Day</span>
+          }
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label>Occupation</label>
+          <div class="combo-wrapper" [class.open]="dropdownOpen">
+            <div class="combo-input-wrap">
+              <input
+                type="text"
+                class="combo-input"
+                [value]="
+                  dropdownOpen ? occupationSearch : selectedOccupationName
+                "
+                placeholder=""
+                (focus)="openDropdown()"
+                (input)="onOccupationSearch($event)"
+                autocomplete="off"
+              />
+              <span
+                class="combo-arrow"
+                (mousedown)="$event.preventDefault(); toggleDropdown()"
+                >&#9660;</span
+              >
+            </div>
+            @if (dropdownOpen) {
+              <div class="combo-dropdown">
+                <ul class="combo-list">
+                  <li
+                    class="combo-item empty-item"
+                    (mousedown)="
+                      $event.preventDefault(); selectOccupation(null)
+                    "
+                  >
+                    -- ไม่ระบุ --
+                  </li>
+                  @for (occ of filteredOccupations; track occ.id) {
+                    <li
+                      class="combo-item"
+                      [class.selected]="f['occupationId'].value == occ.id"
+                      (mousedown)="
+                        $event.preventDefault(); selectOccupation(occ)
+                      "
+                    >
+                      {{ occ.name }}
+                    </li>
+                  }
+                  @if (filteredOccupations.length === 0) {
+                    <li class="combo-item no-result">ไม่พบข้อมูล</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+          @if (
+            f["occupationId"].touched && f["occupationId"].hasError("required")
+          ) {
+            <span class="error">Please selected any Occupation</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Sex</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" formControlName="sex" value="M" />
+              <span class="radio-custom"></span>
+              Male
+            </label>
+            <label class="radio-label">
+              <input type="radio" formControlName="sex" value="F" />
+              <span class="radio-custom"></span>
+              Female
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-save" (click)="onSave()">Save</button>
+        <button type="button" class="btn-clear" (click)="resetForm()">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
